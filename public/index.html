@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>URL Lengthener</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.2.0/css/mdb.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">URL Lengthener Service</a>
+            </div>
+        </div>
+    </nav>
+
+    <p class="text-center">Enter any short URL and Lets lengthen it! Because.. because.. idk man I'm probably high.</p>
+
+    <div class="form-group" style="width: 50%;margin-left: 25%;text-align: -webkit-center;">
+        <form id="urlForm">
+            <input class="form-control" name="url" type="text" id="urlInput" placeholder="Enter URL">
+            <button class="btn btn-success" type="submit">lengthen</button>
+        </form>
+        <p class="text-center" style="width: 500px; word-wrap: break-word; " id="result"></p>
+    </div>
+
+
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const urlInput = document.getElementById('urlInput');
+            const result = document.getElementById('result');
+            result.innerHTML = 'Loading...';
+
+            try {
+                const response = await fetch('/lengthen', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: urlInput.value })
+                });
+
+                if (response.ok) {
+                    const { shortUrl, url } = await response.json();
+                    result.innerHTML = `http://localhost:3000/${shortUrl}`
+                } else {
+                    throw new Error('Failed to lengthen URL');
+                }
+            } catch (error) {
+                console.error(error);
+                result.innerHTML = 'Failed to lengthen URL';
+            }
+        });
+    </script>
+</body>
+
+</html>
